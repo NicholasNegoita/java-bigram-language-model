@@ -26,10 +26,20 @@ public class Bigram {
 		return prompt;
 	}
 	
-	public static String mapNewWord(String word, HashMap<String, Long> map) {
-		int x = (int)(Math.random()*(map.size()));
-		List<String> list = new ArrayList<>(map.keySet());
-		return(list.get(x));
+	public static String mapNewWord(HashMap<String, Long> map) {
+		
+		long count = 0;
+		for(Map.Entry<String, Long> entry: map.entrySet()) {
+			count+=entry.getValue();
+		}
+		long x = (long)(Math.random()*count) + 1;
+		int newSum = 0;
+		for(Map.Entry<String, Long> entry: map.entrySet()) {
+			newSum+=entry.getValue();
+			if(newSum >= x)
+				return entry.getKey();
+		}
+		return "";
 	}
 	
 	public static void main(String[] args) {
@@ -73,7 +83,7 @@ public class Bigram {
 			int outputLength = (int)(Math.random()*10)+1;
 		for(int i=0; i<outputLength; i++) {
 			HashMap<String, Long> map = outerMap.get(prompt);
-			prompt = mapNewWord(prompt, map);
+			prompt = mapNewWord(map);
 			output+= ANSI_YELLOW + prompt + " " + ANSI_RESET;
 			if(!outerMap.containsKey(prompt))
 				break;
